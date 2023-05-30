@@ -1,26 +1,65 @@
-import React from "react";
+import React, { useState } from 'react';
+import './TodoApp.css';
 
-//include images into your bundle
-import rigoImage from "../../img/rigo-baby.jpg";
+function TodoApp() {
+  const [taskInput, setTaskInput] = useState('');
+  const [taskList, setTaskList] = useState([]);
 
-//create your first component
-const Home = () => {
-	return (
-		<div className="text-center">
-			<h1 className="text-center mt-5">Hello Rigo!</h1>
-			<p>
-				<img src={rigoImage} />
-			</p>
-			<a href="#" className="btn btn-success">
-				If you see this green button... bootstrap is working...
-			</a>
-			<p>
-				Made by{" "}
-				<a href="http://www.4geeksacademy.com">4Geeks Academy</a>, with
-				love!
-			</p>
-		</div>
-	);
-};
+  const handleTaskInputChange = (event) => {
+    setTaskInput(event.target.value);
+  };
 
-export default Home;
+  const handleTaskAdd = () => {
+    if (taskInput.trim() !== '') {
+      setTaskList([...taskList, taskInput.trim()]);
+      setTaskInput('');
+    }
+  };
+
+  const handleTaskDelete = (index) => {
+    const updatedTaskList = [...taskList];
+    updatedTaskList.splice(index, 1);
+    setTaskList(updatedTaskList);
+  };
+
+  return (
+    <div className="todo-app">
+      <h1>Lista de Tareas</h1>
+      <div className="input-container">
+        <input
+          type="text"
+          placeholder="Agregar tarea"
+          value={taskInput}
+          onChange={handleTaskInputChange}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              handleTaskAdd();
+            }
+          }}
+        />
+        <button className="add-button" onClick={handleTaskAdd}>
+          Agregar
+        </button>
+      </div>
+      <ul className="task-list">
+        {taskList.length === 0 ? (
+          <li className="no-tasks">No hay tareas, añadir tareas</li>
+        ) : (
+          taskList.map((task, index) => (
+            <li key={index} className="task">
+              {task}
+              <span
+                className="delete"
+                onClick={() => handleTaskDelete(index)}
+              >
+                x
+              </span>
+            </li>
+          ))
+        )}
+      </ul>
+    </div>
+  );
+}
+
+export default TodoApp;
