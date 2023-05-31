@@ -1,65 +1,32 @@
-import React, { useState } from 'react';
-import './TodoApp.css';
+import React, { useState } from "react";
+import TaskList from "./TaskList.jsx";
+import TodoForm from "./TodoForm.jsx";
 
-function TodoApp() {
-  const [taskInput, setTaskInput] = useState('');
-  const [taskList, setTaskList] = useState([]);
+const Home = () => {
+  const [tasks, setTasks] = useState([]);
 
-  const handleTaskInputChange = (event) => {
-    setTaskInput(event.target.value);
+  const addTask = (title) => {
+    const newTask = {
+      id: Date.now(),
+      title,
+      active: true
+    };
+    setTasks([...tasks, newTask]);
   };
 
-  const handleTaskAdd = () => {
-    if (taskInput.trim() !== '') {
-      setTaskList([...taskList, taskInput.trim()]);
-      setTaskInput('');
-    }
-  };
-
-  const handleTaskDelete = (index) => {
-    const updatedTaskList = [...taskList];
-    updatedTaskList.splice(index, 1);
-    setTaskList(updatedTaskList);
+  const deleteTask = (taskId) => {
+    const updatedTasks = tasks.filter((task) => task.id !== taskId);
+    setTasks(updatedTasks);
   };
 
   return (
-    <div className="todo-app">
-      <h1>Lista de Tareas</h1>
-      <div className="input-container">
-        <input
-          type="text"
-          placeholder="Agregar tarea"
-          value={taskInput}
-          onChange={handleTaskInputChange}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              handleTaskAdd();
-            }
-          }}
-        />
-        <button className="add-button" onClick={handleTaskAdd}>
-          Agregar
-        </button>
-      </div>
-      <ul className="task-list">
-        {taskList.length === 0 ? (
-          <li className="no-tasks">No hay tareas, añadir tareas</li>
-        ) : (
-          taskList.map((task, index) => (
-            <li key={index} className="task">
-              {task}
-              <span
-                className="delete"
-                onClick={() => handleTaskDelete(index)}
-              >
-                x
-              </span>
-            </li>
-          ))
-        )}
-      </ul>
+    <div className="app">
+      <h1>TodoList</h1>
+      <TodoForm onAdd={addTask} />
+      <TaskList tasks={tasks} onDelete={deleteTask} />
     </div>
   );
-}
+};
 
-export default TodoApp;
+export default Home;
+
